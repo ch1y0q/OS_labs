@@ -1,4 +1,7 @@
+#define  _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 /*----------------------------------------------------------------
 getline is a POSIX function
 https://www.gnu.org/software/libc/manual/html_node/Line-Input.html 
@@ -28,9 +31,10 @@ int main(int argc, char *argv[])
         FILE *inFile = fopen(argv[0], "r");
         if (!inFile)
         {
-
-            fprintf(stderr, strcat("error: cannot open file \'",
-                                   argv[0], "\'\n"));
+            char *errorMessage = "error: cannot open file \'";
+            strcat(errorMessage, argv[0]);
+            strcat(errorMessage, "\'\n");
+            fprintf(stderr, errorMessage);
             exit(1);
         }
         char *str = NULL;
@@ -48,7 +52,7 @@ int main(int argc, char *argv[])
             FILE *outFile = fopen(argv[1], "w");
             while (curNode)
             {
-                fprintf(outFile, "\s\n", curNode->str);
+                fprintf(outFile, "%s\n", curNode->str);
                 curNode = curNode->prev;
             }
         }
@@ -56,7 +60,7 @@ int main(int argc, char *argv[])
         { // no output file, write to stdout
             while (curNode)
             {
-                fprintf(stdout, "\s\n", curNode->str);
+                fprintf(stdout, "%s\n", curNode->str);
                 curNode = curNode->prev;
             }
         }
@@ -76,7 +80,7 @@ int main(int argc, char *argv[])
         struct node *curNode = headNode;
         while (curNode)
         {
-            fprintf(stdout, "\s\n", curNode->str);
+            fprintf(stdout, "%s\n", curNode->str);
             curNode = curNode->prev;
         }
     }
