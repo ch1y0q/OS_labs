@@ -12,21 +12,23 @@ int main(int argc, char *argv[])
     {
         exit(0);
     }
-
-    FILE *inFile;
-    size_t len = 0;
-    inFile = fopen(argv[1], "r");
-    if (inFile == NULL)
+    for (int i = 1; i < argc; ++i)
     {
-        fprintf(stderr, "%s\n", "cannot open file");
-        exit(1);
+        FILE *inFile;
+        size_t len = 0;
+        inFile = fopen(argv[i], "r");
+        if (inFile == NULL)
+        {
+            fprintf(stderr, "%s\n", "cannot open file");
+            exit(1);
+        }
+        char *str = NULL;
+        while (getline(&str, &len, inFile) != -1)
+        {
+            printf("%s", str);
+            str = NULL;
+        }
+        fclose(inFile);
     }
-    char *str = NULL;
-    while (getline(&str, &len, inFile) != -1)
-    {
-        printf("%s", str);
-        str = NULL;
-    }
-    fclose(inFile);
     return 0;
 }
