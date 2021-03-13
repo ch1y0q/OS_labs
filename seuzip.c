@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
     char lastChar = 0;
     unsigned int charCnt = 0;
     FILE *inFile;
-    size_t len = 0;
     char curChar = 0;
     for (int i = 1; i < argc; ++i)
     {
@@ -32,7 +31,7 @@ int main(int argc, char *argv[])
             if (curChar != lastChar)
             {
                 fwrite(&charCnt, 4, 1, stdout);
-                fwrite(&curChar, 1, 1, stdout);
+                fwrite(&lastChar, 1, 1, stdout);
                 lastChar = curChar;
                 charCnt = 1;
             }
@@ -42,10 +41,10 @@ int main(int argc, char *argv[])
             }
             curChar = fgetc(inFile);
         }
-        fwrite(&charCnt, 4, 1, stdout);
-        fwrite(&curChar, 1, 1, stdout);
-        fclose(inFile);
-    }
+}
+    fwrite(&charCnt, 4, 1, stdout);
+    fwrite(&lastChar,1, 1, stdout);
+    fclose(inFile);
 
     return 0;
 }
