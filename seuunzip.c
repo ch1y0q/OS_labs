@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
         fread(&curChar, 1, 1, inFile);
         while (!feof(inFile))
         {
-	//printf("%d\n",charCnt);
             while (charCnt--)
             {
                 printf("%c", curChar);
@@ -37,7 +36,7 @@ int main(int argc, char *argv[])
             fread(&charCnt, 4, 1, inFile);
             fread(&curChar, 1, 1, inFile);
         }
-	fclose(inFile);
+        fclose(inFile);
     }
 
     return 0;
