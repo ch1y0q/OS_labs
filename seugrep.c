@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     else if (argc > 2) // has input file
     {
-        for (int i = 1; i < argc; ++i)
+        for (int i = 2; i < argc; ++i)
         {
             FILE *inFile;
             size_t len = 0;
