@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
         inFile = fopen(argv[i], "r");
         if (inFile == NULL)
         {
-            fprintf(stderr, "%s\n", "cannot open file");
+            printf("%s\n", "cannot open file");
             exit(1);
         }
         char *str = NULL;
