@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
             }
             curChar = fgetc(inFile);
         }
-}
+    }
     fwrite(&charCnt, 4, 1, stdout);
-    fwrite(&lastChar,1, 1, stdout);
+    fwrite(&lastChar, 1, 1, stdout);
     fclose(inFile);
 
     return 0;
