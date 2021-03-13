@@ -5,10 +5,6 @@
 #define BOOL int
 #define TRUE 1
 #define FALSE 0
-/*----------------------------------------------------------------
-getline is a POSIX function
-https://www.gnu.org/software/libc/manual/html_node/Line-Input.html 
-*/
 
 int main(int argc, char *argv[])
 {
