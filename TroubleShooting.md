@@ -33,3 +33,18 @@ https://bugs.launchpad.net/qemu/+bug/1715296
 https://lists.gnu.org/archive/html/qemu-devel/2018-05/msg05462.html
 
 I downloaded the source code, compiled, but got the same problem...
+
+Ran Xv6 directly in qemu, and 
+```
+$ cat 2.out
+XV6_TEST_OUTPUT 200000
+```
+
+```
+$ ls
+...
+2.out          2 21 23
+...
+```
+
+23 = 22 visible characters + \n, seems to be fine... Further investigation is needed.
