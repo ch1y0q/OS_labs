@@ -1,1 +1,2 @@
-kill.o: kill.c /usr/include/stdc-predef.h types.h stat.h user.h
+kill.o: kill.c /usr/i686-linux-gnu/include/stdc-predef.h types.h stat.h \
+ user.h
