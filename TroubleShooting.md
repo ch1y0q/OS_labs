@@ -32,18 +32,36 @@ The I looked into test_1.c: `printf(1, "XV6_TEST_OUTPUT %d %d %d\n", x2-x1, x3-x
 ------
 03.17:
 Now, it seems more like qemu's bug.
+
 https://bugs.launchpad.net/qemu/+bug/1715296
 https://lists.gnu.org/archive/html/qemu-devel/2018-05/msg05462.html
 
 I downloaded the source code, compiled, but got the same problem...
-
 Then I run dos2unix to everything in the project folder to replace CRLF with LF, but not work.
+
 
 03.19: 
 Finally I found the most probable reason:
 https://stackoverflow.com/questions/27531065/where-does-the-r-come-from
 https://os.mbed.com/questions/2190/Serial-output-CRLF/
+
+Ran Xv6 directly in qemu, and 
+```
+$ cat 2.out
+XV6_TEST_OUTPUT 200000
+```
+
+```
+$ ls
+...
+2.out          2 21 23
+...
+```
+
+23 = 22 visible characters + \n, seems to be fine... Further investigation is needed. Now it's highly likely `\r` comes from expect not qemu.
+
 I also put forward a question on Stack Overflow: https://stackoverflow.com/questions/66706868/how-to-prevent-expect-from-outputting-crlf. The only one comment I received suggest that Expect always use `\r\n` as line endings. Fine.
 
 03.26
 Try to run test with a classmate's code(passed tests on his machine), results same as mine. The problem must be related to environment, not my code!
+

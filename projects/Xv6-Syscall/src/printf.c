@@ -47,7 +47,7 @@ printf(int fd, const char *fmt, ...)
   ap = (uint*)(void*)&fmt + 1;
   for(i = 0; fmt[i]; i++){
     c = fmt[i] & 0xff;
-    if(c=='\r') continue;
+    if(c == '\r') continue;
     if(state == 0){
       if(c == '%'){
         state = '%';
