@@ -16,16 +16,27 @@ char *clean(char *line)
         ++i;
     }
 
+    BOOL LAST_IS_SPACE_TAB = FALSE;
     while (line[character + i] != '\0' && line[character + i] != '\n')
     {
         line[character] = line[character + i];
         if (line[character + i] != ' ' && line[character + i] != '\t')
         {
+            LAST_IS_SPACE_TAB = FALSE;
             lastNonSpace = character;
         }
+        else
+        {
+            while (line[character + i] == ' ' || line[character + i] == '\t')
+            {
+                LAST_IS_SPACE_TAB = TRUE;++i;
+            }
+        }
+        if(LAST_IS_SPACE_TAB)--i;
         character++;
     }
     line[lastNonSpace + 1] = '\0';
+    //write(STDOUT_FILENO, line, strlen(line)); // DEBUG
     return line;
 }
 
@@ -35,7 +46,10 @@ char *getNextLine(FILE *batchFile)
     size_t len = 0;
     if (batchFile == NULL)
     {
-        line = readline("seush> ");
+        write(STDOUT_FILENO, "seush>", strlen("seush>"));
+        while (getline(&line, &len, stdin) == -1)
+        {
+        };
     }
     else if (getline(&line, &len, batchFile) == -1)
     {
@@ -73,18 +87,21 @@ void run_shell(char *batch)
             if (line[4] == '\0')
             {
                 free(line);
-                break;
+                exit(0);
             }
             else
             {
                 PRINT_ERROR_MESSAGE;
             }
+            break;
         }
         else if (strncmp(line, "path", 4) == 0)
         {
+            // TODO
         }
         else if (strncmp(line, "cd", 2) == 0)
         {
+            // TODO
         }
         free(line);
     }

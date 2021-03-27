@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/seush.dir/loop.c.o CMakeFiles/seush.dir/seush.c.o  -o seush 
