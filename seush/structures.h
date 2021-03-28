@@ -21,7 +21,7 @@ typedef struct Process
     int stdin[2];
     int stdout[2];
     int stderr[2];
-    int mode;
+    BOOL redirection;
     int redirection;
 } Process;
 

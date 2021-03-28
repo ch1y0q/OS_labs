@@ -8,6 +8,7 @@
 #include "macros.h"
 #include "structures.h"
 #include "utilities.h"
+#include "run_command.h"
 
 char *getNextLine(FILE *batchFile)
 {
@@ -101,10 +102,11 @@ void run_shell(char *batch)
             }
         }
 
-        /* run a process */
+        /* run a non-built-in command */
         else
         {
-            // TODO
+            parse_command(line, &environment);
+            run_processes(line, &environment);
         }
 
         free(line);
