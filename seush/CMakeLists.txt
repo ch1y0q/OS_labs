@@ -15,5 +15,5 @@ include_directories(./ include)
 # Target
 add_executable(seush ${DIRSRCS})
 
-find_library(readline rl-lib /usr/share)
-target_link_libraries(seush ${rl-lib})
+#find_library(readline rl-lib /usr/share)
+target_link_libraries(seush)

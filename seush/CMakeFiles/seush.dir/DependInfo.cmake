@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_C
   "/home/z3nith/OS_labs/seush/loop.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/loop.c.o"
   "/home/z3nith/OS_labs/seush/seush.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/seush.c.o"
+  "/home/z3nith/OS_labs/seush/utilities.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/utilities.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

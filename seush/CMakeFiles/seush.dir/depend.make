@@ -3,7 +3,13 @@
 
 CMakeFiles/seush.dir/loop.c.o: loop.c
 CMakeFiles/seush.dir/loop.c.o: macros.h
+CMakeFiles/seush.dir/loop.c.o: structures.h
+CMakeFiles/seush.dir/loop.c.o: utilities.h
 
 CMakeFiles/seush.dir/seush.c.o: loop.h
 CMakeFiles/seush.dir/seush.c.o: seush.c
+
+CMakeFiles/seush.dir/utilities.c.o: macros.h
+CMakeFiles/seush.dir/utilities.c.o: structures.h
+CMakeFiles/seush.dir/utilities.c.o: utilities.c
 

@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #ifndef LOOP_H
 #define LOOP_H
 

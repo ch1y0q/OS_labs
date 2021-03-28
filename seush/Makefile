@@ -177,6 +177,33 @@ seush.c.s:
 	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/seush.c.s
 .PHONY : seush.c.s
 
+utilities.o: utilities.c.o
+
+.PHONY : utilities.o
+
+# target to build an object file
+utilities.c.o:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/utilities.c.o
+.PHONY : utilities.c.o
+
+utilities.i: utilities.c.i
+
+.PHONY : utilities.i
+
+# target to preprocess a source file
+utilities.c.i:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/utilities.c.i
+.PHONY : utilities.c.i
+
+utilities.s: utilities.c.s
+
+.PHONY : utilities.s
+
+# target to generate assembly for a file
+utilities.c.s:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/utilities.c.s
+.PHONY : utilities.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +219,9 @@ help:
 	@echo "... seush.o"
 	@echo "... seush.i"
 	@echo "... seush.s"
+	@echo "... utilities.o"
+	@echo "... utilities.i"
+	@echo "... utilities.s"
 .PHONY : help
 
 

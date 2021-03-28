@@ -3,42 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "macros.h"
-
-char *clean(char *line)
-{
-    size_t len = strlen(line), i = 0;
-    int character = 0;
-    int lastNonSpace = -1;
-    while (line[i] == ' ' || line[i] == '\t')
-    { /* remove initial spaces*/
-        ++i;
-    }
-
-    BOOL LAST_IS_SPACE_TAB = FALSE;
-    while (line[character + i] != '\0' && line[character + i] != '\n')
-    {
-        line[character] = line[character + i];
-        if (line[character + i] != ' ' && line[character + i] != '\t')
-        {
-            LAST_IS_SPACE_TAB = FALSE;
-            lastNonSpace = character;
-        }
-        else
-        {
-            while (line[character + i] == ' ' || line[character + i] == '\t')
-            {
-                LAST_IS_SPACE_TAB = TRUE;++i;
-            }
-        }
-        if(LAST_IS_SPACE_TAB)--i;
-        character++;
-    }
-    line[lastNonSpace + 1] = '\0';
-    //write(STDOUT_FILENO, line, strlen(line)); // DEBUG
-    return line;
-}
+#include "structures.h"
+#include "utilities.h"
 
 char *getNextLine(FILE *batchFile)
 {
@@ -61,6 +30,13 @@ char *getNextLine(FILE *batchFile)
 
 void run_shell(char *batch)
 {
+    /* initialize environment */
+    Environment environment;
+    environment.paths = DEFAULT_PATHS;
+    environment.cwd[0] = '.';
+    environment.cwd[1] = '\0';
+    environment.path_set_by_user = FALSE;
+
     FILE *batchFile = NULL;
     if (batch != NULL)
     { // read from file
@@ -76,6 +52,7 @@ void run_shell(char *batch)
     while (TRUE)
     {
         line = getNextLine(batchFile);
+        line = clean(line);
         if (line == NULL)
             break;
         if (line[0] == '\0')
@@ -93,16 +70,43 @@ void run_shell(char *batch)
             {
                 PRINT_ERROR_MESSAGE;
             }
-            break;
         }
         else if (strncmp(line, "path", 4) == 0)
         {
-            // TODO
+            /* clear previous path if exists */
+            if (environment.path_set_by_user)
+            {
+                free(environment.paths);
+            }
+            environment.paths = strdup(line + 5); // skip "path "
+            environment.path_set_by_user = TRUE;
+#ifdef DEBUG
+            WOUT(environment.paths);
+#endif
         }
         else if (strncmp(line, "cd", 2) == 0)
         {
+            char *new_dir = line + 3;
+            //char *new_dir = to_absolute_path(line + 3, environment.cwd);
+            DIR *dir = opendir(new_dir);
+            if (dir)
+            {
+                strncpy(environment.cwd, new_dir, MAX_PATH);
+                chdir(new_dir);
+                closedir(dir);
+            }
+            else
+            {
+                PRINT_ERROR_MESSAGE;
+            }
+        }
+
+        /* run a process */
+        else
+        {
             // TODO
         }
+
         free(line);
     }
 
@@ -111,4 +115,7 @@ void run_shell(char *batch)
     {
         fclose(batchFile);
     }
+
+    /* free environment paths */
+    free(environment.paths);
 }

@@ -15,8 +15,28 @@ string.h
 -
 unistd.h
 -
+dirent.h
+-
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
+utilities.h
+/home/z3nith/OS_labs/seush/utilities.h
+
+/home/z3nith/OS_labs/seush/macros.h
+
+/home/z3nith/OS_labs/seush/structures.h
+linux/limits.h
+-
+limits.h
+-
+sys/types.h
+-
+stdio.h
+-
 macros.h
 /home/z3nith/OS_labs/seush/macros.h
 
-/home/z3nith/OS_labs/seush/macros.h
+/home/z3nith/OS_labs/seush/utilities.h
 

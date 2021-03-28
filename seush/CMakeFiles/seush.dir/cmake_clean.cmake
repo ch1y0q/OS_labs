@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/seush.dir/loop.c.o"
   "CMakeFiles/seush.dir/seush.c.o"
+  "CMakeFiles/seush.dir/utilities.c.o"
   "seush"
   "seush.pdb"
 )
