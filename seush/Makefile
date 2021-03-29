@@ -150,6 +150,33 @@ loop.c.s:
 	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/loop.c.s
 .PHONY : loop.c.s
 
+run_command.o: run_command.c.o
+
+.PHONY : run_command.o
+
+# target to build an object file
+run_command.c.o:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/run_command.c.o
+.PHONY : run_command.c.o
+
+run_command.i: run_command.c.i
+
+.PHONY : run_command.i
+
+# target to preprocess a source file
+run_command.c.i:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/run_command.c.i
+.PHONY : run_command.c.i
+
+run_command.s: run_command.c.s
+
+.PHONY : run_command.s
+
+# target to generate assembly for a file
+run_command.c.s:
+	$(MAKE) -f CMakeFiles/seush.dir/build.make CMakeFiles/seush.dir/run_command.c.s
+.PHONY : run_command.c.s
+
 seush.o: seush.c.o
 
 .PHONY : seush.o
@@ -216,6 +243,9 @@ help:
 	@echo "... loop.o"
 	@echo "... loop.i"
 	@echo "... loop.s"
+	@echo "... run_command.o"
+	@echo "... run_command.i"
+	@echo "... run_command.s"
 	@echo "... seush.o"
 	@echo "... seush.i"
 	@echo "... seush.s"

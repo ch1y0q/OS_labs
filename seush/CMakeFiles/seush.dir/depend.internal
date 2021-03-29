@@ -4,6 +4,13 @@
 CMakeFiles/seush.dir/loop.c.o
  /home/z3nith/OS_labs/seush/loop.c
  /home/z3nith/OS_labs/seush/macros.h
+ /home/z3nith/OS_labs/seush/run_command.h
+ /home/z3nith/OS_labs/seush/structures.h
+ /home/z3nith/OS_labs/seush/utilities.h
+CMakeFiles/seush.dir/run_command.c.o
+ /home/z3nith/OS_labs/seush/macros.h
+ /home/z3nith/OS_labs/seush/run_command.c
+ /home/z3nith/OS_labs/seush/run_command.h
  /home/z3nith/OS_labs/seush/structures.h
  /home/z3nith/OS_labs/seush/utilities.h
 CMakeFiles/seush.dir/seush.c.o

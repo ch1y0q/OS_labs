@@ -3,79 +3,138 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <string.h>
 
 #include "macros.h"
 #include "run_command.h"
+#include "utilities.h"
+#include "structures.h"
 
-Process *process;
-int pid_amount;
+struct Process process[MAX_PIDS];
+int process_num = 0;
+
+char *token;
 
 void run_command(char *line, Environment *environment)
 {
     parse_command(line, environment);
-    run_processes();
 }
 
 void parse_command(char *line, Environment *environment)
 {
+    //pid_t pid = getpgrp();
+    //printf("%d\n", pid);
+
+    /* remove redundant space and tab */
     line = clean(line);
-    int character = 0;
-    BOOL has_redirection = FALSE; /* turns TRUE when encountering first '>' */
-    char *to_redirect = NULL;     /* destination to redirect output */
-    BOOL command_read = FALSE;    /* turns TRUE when the command is read, i.e. encountering first space */
-    while (line[character] != '\0')
+
+    /* parse "&" */
+    char *single_commands[MAX_ARGUMENTS];
+    int single_command_num = 0;
+    token = strtok(line, "&");
+    while (token != NULL)
     {
+        single_commands[single_command_num++] = strdup(token);
+        token = strtok(NULL, "&");
+    }
+    single_commands[single_command_num] = NULL;
+
+    for (int i = 0; i < single_command_num; ++i)
+    {
+        char *cur_command = strdup(single_commands[i]);
+        cur_command = clean(cur_command);
+        if (cur_command == NULL || cur_command[0] == '\0')
+            continue;
+        //printf("%d: %s\n", i, cur_command);
+
         /* redirection */
-        if (line[character] == '>')
+        char *redirection_sep[5];
+        int redirection_sep_num = 0;
+        token = strtok(line, ">");
+        while (token != NULL)
         {
-            if (has_redirection)
-            {
+            redirection_sep[redirection_sep_num++] = strdup(token);
+            if (redirection_sep_num > 2)
+            { /* there can be only one ">" */
                 PRINT_ERROR_MESSAGE;
                 return;
             }
-            else
-            {
-                to_redirect = line + character + 1;
-                line[character] = '\0';
-                has_redirection = TRUE;
-            }
+            token = strtok(NULL, ">");
         }
 
-        /* parallel */
-        else if (line[character] == '&'){
-            line[character] = '\0';
-            run_command(line+character+1, environment);
-            return;
-        }
-
-        /* arguments */
-        else if (line[character] == ' ')
+        if (redirection_sep_num == 2)
         {
-            // TODO
-        }
-
-        character++;
-    }
-}
-
-void run_processes()
-{
-    /* run all processes and wait for them to finnish */
-    for (int number = 0; number < pid_amount; number++)
-    {
-        waitpid(process[number].pid, 0, 0);
-        if (!process[number].redirection)
-        {
-            /* write directly to stdout and stderr */
-            pipe_to_std(process[number].stdout[0], STDOUT_FILENO);
-            pipe_to_std(process[number].stderr[0], STDERR_FILENO);
+            process[process_num].redirected = TRUE;
+            process[process_num].redirection = open(redirection_sep[1], O_WRONLY | O_CREAT);
         }
         else
         {
-            close(process[number].redirection);
+            process[process_num].redirected = FALSE;
         }
-        close(process[number].stdout[0]);
-        close(process[number].stderr[0]);
-        close(process[number].stdin[1]);
+
+        /* arguments */
+        process[process_num].argv=malloc(sizeof(char *)*MAX_ARGUMENTS);
+        process[process_num].argc = 0;
+
+        token = strtok(redirection_sep[0], " ");
+        while (token != NULL)
+        {
+            process[process_num].argv[process[process_num].argc++] = strdup(token);
+            token = strtok(NULL, " ");
+        }
+
+        /* find path for command */
+        if (access(process[process_num].argv[0], X_OK) == 0)         /* absolute path given */
+        {
+            process[process_num].exec_path = strdup(process[process_num].argv[0]);
+        }
+
+        else                                    /* finding from environment paths */
+        {
+            int path_i = 0;
+            while (environment->paths[i] != NULL)
+            {
+
+                char *full_path = strdup(environment->paths[i]);
+                if (full_path[strlen(full_path) - 1] != '/')
+                {
+                    strcat(full_path, "/");
+                }
+                strcat(full_path, process[process_num].argv[0]);
+                if (access(full_path, X_OK) == 0)
+                {
+                    process[process_num].exec_path = strdup(full_path);
+                    break;
+                }
+                path_i++;
+            }
+        }
+
+        /* get prepared for first parameter of execv */
+        for(int i = 1; i < process[process_num].argc; i++){
+            strcat(process[process_num].exec_path, process[process_num].argv[i]);
+        }
+
+        /* ready for a new process */
+        ++process_num;
+        run_processes(environment);
     }
+}
+
+void run_processes(Environment *environment)
+{
+    pid_t pid = 0; /* parent process */
+    const pid_t pgrp =  getpgrp();
+    /* run all processes and wait for them to finnish */
+    for (int number = 0; number < process_num; number++)
+    {
+        pid = process[number].pid = fork();
+        execv(process[number].exec_path, environment->paths);
+        if(!pid) printf("%d\n",getpgrp());
+        // TODO: redirection
+    }
+    if(!pid){waitpid(-pgrp, 0, 0);}
 }

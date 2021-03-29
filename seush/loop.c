@@ -33,7 +33,8 @@ void run_shell(char *batch)
 {
     /* initialize environment */
     Environment environment;
-    environment.paths = DEFAULT_PATHS;
+    environment.paths[0] = DEFAULT_PATHS;
+    environment.paths[1] = NULL;
     environment.cwd[0] = '.';
     environment.cwd[1] = '\0';
     environment.path_set_by_user = FALSE;
@@ -79,11 +80,17 @@ void run_shell(char *batch)
             {
                 free(environment.paths);
             }
-            environment.paths = strdup(line + 5); // skip "path "
+            char *paths = strdup(line + 5); // skip "path "
             environment.path_set_by_user = TRUE;
-#ifdef DEBUG
-            WOUT(environment.paths);
-#endif
+            int path_sep_num = 0;
+            char *token = strtok(paths, " ");
+            while (token != NULL)
+            {
+                environment.paths[path_sep_num++] = strdup(token);
+                token = strtok(NULL, " ");
+            }
+            environment.paths[path_sep_num] = NULL;
+            //WOUT(environment.paths);
         }
         else if (strncmp(line, "cd", 2) == 0)
         {
@@ -105,8 +112,7 @@ void run_shell(char *batch)
         /* run a non-built-in command */
         else
         {
-            parse_command(line, &environment);
-            run_processes(line, &environment);
+            run_command(line, &environment);
         }
 
         free(line);

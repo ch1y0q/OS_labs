@@ -1,0 +1,87 @@
+void run_processes()
+
+        if (!process[number].redirected)
+        {
+            /* write directly to stdout and stderr */
+            pipe_to_std(process[number].stdout[0], STDOUT_FILENO);
+            pipe_to_std(process[number].stderr[0], STDERR_FILENO);
+        }
+        else
+        {
+            close(process[number].redirection);
+        }
+        close(process[number].stdout[0]);
+        close(process[number].stderr[0]);
+        close(process[number].stdin[1]);
+
+
+
+
+    while (line[character] != '\0')
+    {
+        /* redirection */
+        if (line[character] == '>')
+        {
+            if (has_redirection)
+            {
+                PRINT_ERROR_MESSAGE;
+                return;
+            }
+
+            /* parallel */
+            else if (line[character] == '&')
+            {
+                line[character] = '\0';
+                parse_command(line + character + 1, environment);
+                return;
+            }
+
+            /* arguments */
+            else if (line[character] == ' ' || line[character] == '\n')
+            {
+                if (!command_read)
+                {
+                    command_name = strdup(line);
+                    command_name[character] = '\0';
+                    args[++argc] = strdup(command_name);
+                    command_read = TRUE;
+                }
+                else
+                {
+                }
+                if (line[character + 1] != '\0' && line[character + 1] != '\n') /* non-ending whitespace */
+                {
+                }
+            }
+
+            character++;
+        }
+    }
+
+    /* parallel */
+    else if (line[character] == '&')
+    {
+        line[character] = '\0';
+        parse_command(line + character + 1, environment);
+        return;
+    }
+
+    /* arguments */
+    else if (line[character] == ' ' || line[character] == '\n')
+    {
+        if (!command_read)
+        {
+            command_name = strdup(line);
+            command_name[character] = '\0';
+            args[++argc] = strdup(command_name);
+            command_read = TRUE;
+        }
+        else
+        {
+        }
+        if (line[character + 1] != '\0' && line[character + 1] != '\n') /* non-ending whitespace */
+        {
+        }
+    }
+
+    character++;

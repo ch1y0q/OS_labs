@@ -10,7 +10,7 @@
 
 typedef struct Environment  // run-time context
 { 
-    char *paths;            // paths to be searched
+    char *paths[MAX_PATH_NUM]; // array of paths to be searched
     char cwd[MAX_PATH];     // current working directory
     BOOL path_set_by_user;  // if the path was set by user
 } Environment;
@@ -18,11 +18,11 @@ typedef struct Environment  // run-time context
 typedef struct Process
 {
     pid_t pid;
-    int stdin[2];
-    int stdout[2];
-    int stderr[2];
-    BOOL redirection;
-    int redirection;
+    int argc;               // number of arguments
+    char** argv;            // array of char*
+    char * exec_path;
+    BOOL redirected;
+    int redirection;        // fd of opened file
 } Process;
 
 typedef struct Launch

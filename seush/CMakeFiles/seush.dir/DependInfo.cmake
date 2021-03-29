@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/z3nith/OS_labs/seush/loop.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/loop.c.o"
+  "/home/z3nith/OS_labs/seush/run_command.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/run_command.c.o"
   "/home/z3nith/OS_labs/seush/seush.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/seush.c.o"
   "/home/z3nith/OS_labs/seush/utilities.c" "/home/z3nith/OS_labs/seush/CMakeFiles/seush.dir/utilities.c.o"
   )
