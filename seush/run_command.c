@@ -42,12 +42,12 @@ void parse_command(char *line, Environment *environment)
     }
     single_commands[single_command_num] = NULL;
 
-#ifdef DEBUG
+    /*
     for (int _i = 0; _i < single_command_num; ++_i)
     {
         printf("%s\n", single_commands[_i]);
     }
-#endif
+*/
 
     for (int _i = 0; _i < single_command_num; ++_i)
     {
@@ -138,14 +138,14 @@ void parse_command(char *line, Environment *environment)
 
 void run_processes(struct Process process[], int process_num)
 {
-    pid_t pid = 0; /* parent process */
-    const pid_t pgrp = getpgrp();
+    //pid_t pid = 0; /* parent process */
+    //const pid_t pgrp = getpgrp();
     /* run all processes and wait for them to finnish */
     for (int number = 0; number < process_num; number++)
     {
-        printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
+        //printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
 
-        pid = process[number].pid = fork();
+        int pid = process[number].pid = fork();
 
         if (pid < 0)
         {
@@ -153,9 +153,9 @@ void run_processes(struct Process process[], int process_num)
             exit(1);
         }
 
-        else if (pid > 0)
+        else if (pid == 0)
         { /* forked process */
-            printf("pid: %d pgrp: %d\n", getpid(), getpgrp());
+            //printf("pid: %d pgrp: %d\n", getpid(), getpgrp());
             if (process[number].redirected)
             { /* handle redirection */
                 if (-1 == dup2(process[number].redirection, fileno(stderr)))
@@ -170,19 +170,20 @@ void run_processes(struct Process process[], int process_num)
                     exit(1);
                 }
             }
+            //setpgid(0, 0);
             execv(process[number].exec_path, process[number].argv);
             PRINT_ERROR_MESSAGE;
             exit(1); /* something wrong */
         }
 
-        // TODO: redirection
-    }
-    if (pid == 0) /* parent process */
-    {
-        //WOUT("I AM ALIVE")
-        //printf("%d\n", getpgrp());
-        //waitpid(-pgrp, 0, 0);
-        int status;
-        wait(&status);
+        else /* parent process */
+        {
+            //printf("%d\n", getpgrp());
+            //waitpid(-pgrp, 0, 0);
+
+            int status;
+            wait(&status);
+            //waitpid(0, &status, WNOHANG | WUNTRACED);
+        }
     }
 }

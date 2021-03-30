@@ -5,7 +5,7 @@
 
 /* debug */
 #define DEBUG
-#define WOUT(x) write(STDOUT_FILENO, x, strlen(x));
+#define WOUT(x) write(STDERR_FILENO, x, strlen(x));
 
 /* boolean */
 #define BOOL int

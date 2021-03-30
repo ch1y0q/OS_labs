@@ -114,7 +114,6 @@ void run_shell(char *batch)
         }
 
         free(line);
-        WOUT("loop.c 117\n");
     }
 
     /* close batch file */

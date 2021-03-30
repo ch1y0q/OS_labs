@@ -70,5 +70,15 @@ stdio.h
 macros.h
 /home/z3nith/OS_labs/seush/macros.h
 
+/home/z3nith/OS_labs/seush/utilities.c
+stdlib.h
+-
+string.h
+-
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+
 /home/z3nith/OS_labs/seush/utilities.h
 
