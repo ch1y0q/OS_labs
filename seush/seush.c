@@ -4,8 +4,6 @@
 #include <string.h>
 #include "loop.h"
 
-
-
 int main(int argc, char *argv[])
 {
     if (argc >= 3) // Too many arguments passed to program

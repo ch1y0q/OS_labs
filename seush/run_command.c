@@ -13,11 +13,6 @@
 #include "utilities.h"
 #include "structures.h"
 
-struct Process process[MAX_PIDS];
-int process_num = 0;
-
-char *token;
-
 void run_command(char *line, Environment *environment)
 {
     parse_command(line, environment);
@@ -27,6 +22,11 @@ void parse_command(char *line, Environment *environment)
 {
     //pid_t pid = getpgrp();
     //printf("%d\n", pid);
+
+    struct Process process[MAX_PIDS];
+    int process_num = 0;
+
+    char *token;
 
     /* remove redundant space and tab */
     line = clean(line);
@@ -42,18 +42,26 @@ void parse_command(char *line, Environment *environment)
     }
     single_commands[single_command_num] = NULL;
 
-    for (int i = 0; i < single_command_num; ++i)
+#ifdef DEBUG
+    for (int _i = 0; _i < single_command_num; ++_i)
     {
-        char *cur_command = strdup(single_commands[i]);
+        printf("%s\n", single_commands[_i]);
+    }
+#endif
+
+    for (int _i = 0; _i < single_command_num; ++_i)
+    {
+        char *cur_command = strdup(single_commands[_i]);
         cur_command = clean(cur_command);
+        //printf("%s\n", cur_command);
         if (cur_command == NULL || cur_command[0] == '\0')
             continue;
-        //printf("%d: %s\n", i, cur_command);
+        //printf("%d: %s\n", _i, cur_command);
 
         /* redirection */
         char *redirection_sep[5];
         int redirection_sep_num = 0;
-        token = strtok(line, ">");
+        token = strtok(single_commands[_i], ">");
         while (token != NULL)
         {
             redirection_sep[redirection_sep_num++] = strdup(token);
@@ -76,7 +84,7 @@ void parse_command(char *line, Environment *environment)
         }
 
         /* arguments */
-        process[process_num].argv=malloc(sizeof(char *)*MAX_ARGUMENTS);
+        process[process_num].argv = malloc(sizeof(char *) * MAX_ARGUMENTS);
         process[process_num].argc = 0;
 
         token = strtok(redirection_sep[0], " ");
@@ -87,18 +95,18 @@ void parse_command(char *line, Environment *environment)
         }
 
         /* find path for command */
-        if (access(process[process_num].argv[0], X_OK) == 0)         /* absolute path given */
+        if (access(process[process_num].argv[0], X_OK) == 0) /* absolute path given */
         {
             process[process_num].exec_path = strdup(process[process_num].argv[0]);
         }
 
-        else                                    /* finding from environment paths */
+        else /* finding from environment paths */
         {
             int path_i = 0;
-            while (environment->paths[i] != NULL)
+            while (environment->paths[path_i] != NULL)
             {
 
-                char *full_path = strdup(environment->paths[i]);
+                char *full_path = strdup(environment->paths[path_i]);
                 if (full_path[strlen(full_path) - 1] != '/')
                 {
                     strcat(full_path, "/");
@@ -112,29 +120,57 @@ void parse_command(char *line, Environment *environment)
                 path_i++;
             }
         }
-
         /* get prepared for first parameter of execv */
-        for(int i = 1; i < process[process_num].argc; i++){
+        for (int i = 1; i < process[process_num].argc; i++)
+        {
+            strcat(process[process_num].exec_path, " ");
             strcat(process[process_num].exec_path, process[process_num].argv[i]);
         }
 
         /* ready for a new process */
         ++process_num;
-        run_processes(environment);
     }
+
+    run_processes(process, process_num, environment);
 }
 
-void run_processes(Environment *environment)
+void run_processes(struct Process process[], int process_num, Environment *environment)
 {
     pid_t pid = 0; /* parent process */
-    const pid_t pgrp =  getpgrp();
+    const pid_t pgrp = getpgrp();
     /* run all processes and wait for them to finnish */
     for (int number = 0; number < process_num; number++)
     {
+        printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
+
         pid = process[number].pid = fork();
-        execv(process[number].exec_path, environment->paths);
-        if(!pid) printf("%d\n",getpgrp());
+        if (pid)
+        { /* forked process */
+            //printf("%d\n", getpgrp());
+            if (process[number].redirected)
+            { /* handle redirection */
+                if (-1 == dup2(fileno(stdout), fileno(stderr)))
+                {
+                    PRINT_ERROR_MESSAGE;
+                    exit(1);
+                }
+                //close(1); /* close STDOUT, done by dup2 */
+                if (-1 == dup2(process[number].redirection, fileno(stdout)))
+                {
+                    PRINT_ERROR_MESSAGE;
+                    exit(1);
+                }
+            }
+            execv(process[number].exec_path, environment->paths);
+        }
+        else /* parent process */
+        {
+            //printf("%d\n", getpgrp());
+        }
         // TODO: redirection
     }
-    if(!pid){waitpid(-pgrp, 0, 0);}
+    if (!pid)
+    {
+        waitpid(-pgrp, 0, 0);
+    }
 }

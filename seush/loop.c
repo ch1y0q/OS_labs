@@ -19,6 +19,7 @@ char *getNextLine(FILE *batchFile)
         write(STDOUT_FILENO, "seush>", strlen("seush>"));
         while (getline(&line, &len, stdin) == -1)
         {
+            /* wait for input */
         };
     }
     else if (getline(&line, &len, batchFile) == -1)
@@ -55,10 +56,7 @@ void run_shell(char *batch)
     {
         line = getNextLine(batchFile);
         line = clean(line);
-        if (line == NULL)
-            break;
-        if (line[0] == '\0')
-            continue;
+        if (line == NULL || line[0] == '\0') continue;
 
         /* built-in commands */
         if (strncmp(line, "exit", 4) == 0)
@@ -78,7 +76,7 @@ void run_shell(char *batch)
             /* clear previous path if exists */
             if (environment.path_set_by_user)
             {
-                free(environment.paths);
+                // free(environment.paths);
             }
             char *paths = strdup(line + 5); // skip "path "
             environment.path_set_by_user = TRUE;
@@ -125,5 +123,5 @@ void run_shell(char *batch)
     }
 
     /* free environment paths */
-    free(environment.paths);
+    environment.paths[0] = NULL;
 }
