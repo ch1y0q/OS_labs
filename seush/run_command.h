@@ -6,6 +6,6 @@
 
 void parse_command(char *, Environment *);
 void run_command(char *, Environment *);
-void run_processes();
+void run_processes(struct Process process[], int process_num);
 
 #endif

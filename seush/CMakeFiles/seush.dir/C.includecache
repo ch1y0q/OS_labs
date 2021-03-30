@@ -6,6 +6,26 @@
 
 #IncludeRegexTransform: 
 
+/home/z3nith/OS_labs/seush/loop.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+dirent.h
+-
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
+utilities.h
+/home/z3nith/OS_labs/seush/utilities.h
+run_command.h
+/home/z3nith/OS_labs/seush/run_command.h
+
 /home/z3nith/OS_labs/seush/macros.h
 
 /home/z3nith/OS_labs/seush/run_command.c

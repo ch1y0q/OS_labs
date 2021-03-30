@@ -76,7 +76,7 @@ void parse_command(char *line, Environment *environment)
         if (redirection_sep_num == 2)
         {
             process[process_num].redirected = TRUE;
-            process[process_num].redirection = open(redirection_sep[1], O_WRONLY | O_CREAT);
+            process[process_num].redirection = open(clean(redirection_sep[1]), O_WRONLY | O_CREAT, 0666);
         }
         else
         {
@@ -121,20 +121,22 @@ void parse_command(char *line, Environment *environment)
             }
         }
         /* get prepared for first parameter of execv */
+        /*
         for (int i = 1; i < process[process_num].argc; i++)
         {
             strcat(process[process_num].exec_path, " ");
             strcat(process[process_num].exec_path, process[process_num].argv[i]);
         }
+        */
 
         /* ready for a new process */
         ++process_num;
     }
 
-    run_processes(process, process_num, environment);
+    run_processes(process, process_num);
 }
 
-void run_processes(struct Process process[], int process_num, Environment *environment)
+void run_processes(struct Process process[], int process_num)
 {
     pid_t pid = 0; /* parent process */
     const pid_t pgrp = getpgrp();
@@ -144,12 +146,19 @@ void run_processes(struct Process process[], int process_num, Environment *envir
         printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
 
         pid = process[number].pid = fork();
-        if (pid)
+
+        if (pid < 0)
+        {
+            PRINT_ERROR_MESSAGE;
+            exit(1);
+        }
+
+        else if (pid > 0)
         { /* forked process */
-            //printf("%d\n", getpgrp());
+            printf("pid: %d pgrp: %d\n", getpid(), getpgrp());
             if (process[number].redirected)
             { /* handle redirection */
-                if (-1 == dup2(fileno(stdout), fileno(stderr)))
+                if (-1 == dup2(process[number].redirection, fileno(stderr)))
                 {
                     PRINT_ERROR_MESSAGE;
                     exit(1);
@@ -161,16 +170,19 @@ void run_processes(struct Process process[], int process_num, Environment *envir
                     exit(1);
                 }
             }
-            execv(process[number].exec_path, environment->paths);
+            execv(process[number].exec_path, process[number].argv);
+            PRINT_ERROR_MESSAGE;
+            exit(1); /* something wrong */
         }
-        else /* parent process */
-        {
-            //printf("%d\n", getpgrp());
-        }
+
         // TODO: redirection
     }
-    if (!pid)
+    if (pid == 0) /* parent process */
     {
-        waitpid(-pgrp, 0, 0);
+        //WOUT("I AM ALIVE")
+        //printf("%d\n", getpgrp());
+        //waitpid(-pgrp, 0, 0);
+        int status;
+        wait(&status);
     }
 }
