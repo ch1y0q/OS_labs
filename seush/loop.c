@@ -25,7 +25,7 @@ char *getNextLine(FILE *batchFile)
     else if (getline(&line, &len, batchFile) == -1)
     {
         free(line);
-        return line;
+        return NULL;
     }
     return clean(line);
 }
@@ -55,8 +55,17 @@ void run_shell(char *batch)
     while (TRUE)
     {
         line = getNextLine(batchFile);
-        line = clean(line);
-        if (line == NULL || line[0] == '\0') continue;
+#ifdef DEBUG
+        //printf("%s\n", line);
+#endif
+
+        if (line == NULL || line[0] == '\0')
+        {
+            if (batchFile != NULL)
+                break;
+            else
+                continue;
+        }
 
         /* built-in commands */
         if (strncmp(line, "exit", 4) == 0)
@@ -76,19 +85,36 @@ void run_shell(char *batch)
             /* clear previous path if exists */
             if (environment.path_set_by_user)
             {
-                // free(environment.paths);
+                int _i = 0;
+                while (environment.paths[_i][0] != '\0')
+                {
+                    free(environment.paths[_i]);
+                    _i++;
+                }
             }
-            char *paths = strdup(line + 5); // skip "path "
+            char *paths = strdup(line + 4); // skip "path"
+            //printf("%s, paths[0] = %d\n",paths,paths[0]);
             environment.path_set_by_user = TRUE;
             int path_sep_num = 0;
-            char *token = strtok(paths, " ");
-            while (token != NULL)
+            if (paths[0] != '\0')
             {
-                environment.paths[path_sep_num++] = strdup(token);
-                token = strtok(NULL, " ");
+                char *token = strtok(paths, " ");
+                while (token != NULL)
+                {
+                    environment.paths[path_sep_num++] = strdup(token);
+                    token = strtok(NULL, " ");
+                }
             }
-            environment.paths[path_sep_num] = NULL;
-            //WOUT(environment.paths);
+            environment.paths[path_sep_num] = strdup("\0");
+            //printf("%s\n",environment.paths[0]);
+            /*------------------
+                int _i=0;
+                while (environment.paths[_i][0] != '\0')
+                {
+                    printf("%s\n",environment.paths[_i]);
+                    _i++;
+                }
+            ------------------*/
         }
         else if (strncmp(line, "cd", 2) == 0)
         {

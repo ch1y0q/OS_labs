@@ -103,9 +103,8 @@ void parse_command(char *line, Environment *environment)
         else /* finding from environment paths */
         {
             int path_i = 0;
-            while (environment->paths[path_i] != NULL)
+            while (environment->paths[path_i] != NULL && environment->paths[path_i][0] != '\0')
             {
-
                 char *full_path = strdup(environment->paths[path_i]);
                 if (full_path[strlen(full_path) - 1] != '/')
                 {
@@ -133,6 +132,7 @@ void parse_command(char *line, Environment *environment)
         ++process_num;
     }
 
+    chdir(environment->cwd); /* test7: prevent cwd changed by external sh */
     run_processes(process, process_num);
 }
 
