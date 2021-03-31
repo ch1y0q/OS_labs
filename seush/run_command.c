@@ -59,28 +59,41 @@ void parse_command(char *line, Environment *environment)
         //printf("%d: %s\n", _i, cur_command);
 
         /* redirection */
+
         char *redirection_sep[5];
         int redirection_sep_num = 0;
-        token = strtok(single_commands[_i], ">");
-        while (token != NULL)
+        if (strstr(single_commands[_i], ">"))
         {
-            redirection_sep[redirection_sep_num++] = strdup(token);
-            if (redirection_sep_num > 2)
-            { /* there can be only one ">" */
+
+            token = strtok(single_commands[_i], ">");
+            while (token != NULL)
+            {
+                redirection_sep[redirection_sep_num++] = strdup(token);
+                token = strtok(NULL, ">");
+            }
+
+            if (redirection_sep_num == 2) /* redirected */
+            {
+                redirection_sep[1] = clean(redirection_sep[1]);
+                if (strstr(redirection_sep[1], " ")) /* only one dest allowed */
+                {
+                    PRINT_ERROR_MESSAGE;
+                    return;
+                }
+
+                process[process_num].redirected = TRUE;
+                process[process_num].redirection = open(redirection_sep[1], O_WRONLY | O_CREAT, 0666);
+            }
+            else /* there can be only one ">" */
+            {
                 PRINT_ERROR_MESSAGE;
                 return;
             }
-            token = strtok(NULL, ">");
-        }
-
-        if (redirection_sep_num == 2)
-        {
-            process[process_num].redirected = TRUE;
-            process[process_num].redirection = open(clean(redirection_sep[1]), O_WRONLY | O_CREAT, 0666);
         }
         else
         {
             process[process_num].redirected = FALSE;
+            redirection_sep[redirection_sep_num++] = strdup(single_commands[_i]);
         }
 
         /* arguments */

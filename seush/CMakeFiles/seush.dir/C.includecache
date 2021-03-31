@@ -6,7 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/z3nith/OS_labs/seush/loop.c
+/home/z3nith/OS_labs/seush/macros.h
+
+/home/z3nith/OS_labs/seush/run_command.c
 stdio.h
 -
 stdlib.h
@@ -15,18 +17,22 @@ string.h
 -
 unistd.h
 -
-dirent.h
+sys/types.h
+-
+sys/wait.h
+-
+fcntl.h
+-
+string.h
 -
 macros.h
 /home/z3nith/OS_labs/seush/macros.h
-structures.h
-/home/z3nith/OS_labs/seush/structures.h
-utilities.h
-/home/z3nith/OS_labs/seush/utilities.h
 run_command.h
 /home/z3nith/OS_labs/seush/run_command.h
-
-/home/z3nith/OS_labs/seush/macros.h
+utilities.h
+/home/z3nith/OS_labs/seush/utilities.h
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
 
 /home/z3nith/OS_labs/seush/run_command.h
 structures.h
