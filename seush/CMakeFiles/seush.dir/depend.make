@@ -14,6 +14,7 @@ CMakeFiles/seush.dir/run_command.c.o: structures.h
 CMakeFiles/seush.dir/run_command.c.o: utilities.h
 
 CMakeFiles/seush.dir/seush.c.o: loop.h
+CMakeFiles/seush.dir/seush.c.o: macros.h
 CMakeFiles/seush.dir/seush.c.o: seush.c
 
 CMakeFiles/seush.dir/utilities.c.o: macros.h

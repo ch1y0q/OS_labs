@@ -5,7 +5,8 @@
 
 /* debug */
 #define DEBUG
-#define WOUT(x) write(STDERR_FILENO, x, strlen(x));
+#define WERR(x) write(STDERR_FILENO, x, strlen(x));
+#define WOUT(x) write(STDOUT_FILENO, x, strlen(x));
 
 /* boolean */
 #define BOOL int
@@ -13,7 +14,7 @@
 #define FALSE 0
 
 /* error message */
-#define PRINT_ERROR_MESSAGE WOUT("An error has occurred\n")
+#define PRINT_ERROR_MESSAGE WERR("An error has occurred\n")
 
 /* environment */
 #define MAX_PATH 100    /* max length of a path */

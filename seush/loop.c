@@ -27,7 +27,7 @@ char *getNextLine(FILE *batchFile)
         free(line);
         return NULL;
     }
-    return clean(line);
+    return line;
 }
 
 void run_shell(char *batch)
@@ -66,6 +66,8 @@ void run_shell(char *batch)
             else
                 continue;
         }
+
+        line = clean(line);
 
         /* built-in commands */
         if (strncmp(line, "exit", 4) == 0)
