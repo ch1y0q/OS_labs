@@ -6,6 +6,28 @@
 
 #IncludeRegexTransform: 
 
+/home/z3nith/OS_labs/seush/loop.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+dirent.h
+-
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
+utilities.h
+/home/z3nith/OS_labs/seush/utilities.h
+run_command.h
+/home/z3nith/OS_labs/seush/run_command.h
+
+/home/z3nith/OS_labs/seush/loop.h
+
 /home/z3nith/OS_labs/seush/macros.h
 
 /home/z3nith/OS_labs/seush/run_command.c
@@ -38,6 +60,20 @@ structures.h
 structures.h
 /home/z3nith/OS_labs/seush/structures.h
 
+/home/z3nith/OS_labs/seush/seush.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+loop.h
+/home/z3nith/OS_labs/seush/loop.h
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+
 /home/z3nith/OS_labs/seush/structures.h
 linux/limits.h
 -
@@ -47,6 +83,16 @@ sys/types.h
 -
 stdio.h
 -
+macros.h
+/home/z3nith/OS_labs/seush/macros.h
+
+/home/z3nith/OS_labs/seush/utilities.c
+stdlib.h
+-
+string.h
+-
+structures.h
+/home/z3nith/OS_labs/seush/structures.h
 macros.h
 /home/z3nith/OS_labs/seush/macros.h
 

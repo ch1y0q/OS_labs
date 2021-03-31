@@ -34,8 +34,8 @@ void run_shell(char *batch)
 {
     /* initialize environment */
     Environment environment;
-    environment.paths[0] = DEFAULT_PATHS;
-    environment.paths[1] = NULL;
+    environment.paths[0] = strdup(DEFAULT_PATHS);
+    environment.paths[1] = strdup("\0");
     environment.cwd[0] = '.';
     environment.cwd[1] = '\0';
     environment.path_set_by_user = FALSE;
@@ -85,15 +85,13 @@ void run_shell(char *batch)
         else if (strncmp(line, "path", 4) == 0)
         {
             /* clear previous path if exists */
-            if (environment.path_set_by_user)
+            int _i = 0;
+            while (environment.paths[_i] && environment.paths[_i][0] != '\0')
             {
-                int _i = 0;
-                while (environment.paths[_i][0] != '\0')
-                {
-                    free(environment.paths[_i]);
-                    _i++;
-                }
+                free(environment.paths[_i]);
+                _i++;
             }
+
             char *paths = strdup(line + 4); // skip "path"
             //printf("%s, paths[0] = %d\n",paths,paths[0]);
             environment.path_set_by_user = TRUE;
@@ -107,10 +105,10 @@ void run_shell(char *batch)
                     token = strtok(NULL, " ");
                 }
             }
-            environment.paths[path_sep_num] = strdup("\0");
+            environment.paths[path_sep_num] = strdup("");
             //printf("%s\n",environment.paths[0]);
             /*------------------
-                int _i=0;
+                _i=0;
                 while (environment.paths[_i][0] != '\0')
                 {
                     printf("%s\n",environment.paths[_i]);

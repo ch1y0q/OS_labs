@@ -23,9 +23,9 @@ void parse_command(char *line, Environment *environment)
     //pid_t pid = getpgrp();
     //printf("%d\n", pid);
 
-    struct Process process[MAX_PIDS];
+    Process process[MAX_PIDS] = {0}; /* TROUBLESHOOTING: must initialize or will reuse */
     int process_num = 0;
-
+    //printf("$$$$$$$$%s\n", process[0].exec_path);
     char *token;
 
     /* remove redundant space and tab */
@@ -59,7 +59,6 @@ void parse_command(char *line, Environment *environment)
         //printf("%d: %s\n", _i, cur_command);
 
         /* redirection */
-
         char *redirection_sep[5];
         int redirection_sep_num = 0;
         if (strstr(single_commands[_i], ">"))
@@ -115,15 +114,27 @@ void parse_command(char *line, Environment *environment)
 
         else /* finding from environment paths */
         {
+#ifdef DEBUG
+            for (int i = 0; environment->paths[i] && environment->paths[i][0] != '\0'; ++i)
+            {
+                printf("Env:%d %s\n", i, environment->paths[i]);
+            }
+#endif
             int path_i = 0;
             while (environment->paths[path_i] != NULL && environment->paths[path_i][0] != '\0')
             {
+#ifdef DEBUG
+                printf("proc %d %s\n", process_num, process[process_num].argv[0]);
+#endif
                 char *full_path = strdup(environment->paths[path_i]);
                 if (full_path[strlen(full_path) - 1] != '/')
                 {
                     strcat(full_path, "/");
                 }
                 strcat(full_path, process[process_num].argv[0]);
+
+                //printf("*******%s\n",full_path);
+
                 if (access(full_path, X_OK) == 0)
                 {
                     process[process_num].exec_path = strdup(full_path);
@@ -156,8 +167,9 @@ void run_processes(struct Process process[], int process_num)
     /* run all processes and wait for them to finnish */
     for (int number = 0; number < process_num; number++)
     {
-        //printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
-
+#ifdef DEBUG
+        printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
+#endif
         int pid = process[number].pid = fork();
 
         if (pid < 0)
