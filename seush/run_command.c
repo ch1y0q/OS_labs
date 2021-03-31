@@ -20,12 +20,8 @@ void run_command(char *line, Environment *environment)
 
 void parse_command(char *line, Environment *environment)
 {
-    //pid_t pid = getpgrp();
-    //printf("%d\n", pid);
-
     Process process[MAX_PIDS] = {0}; /* TROUBLESHOOTING: must initialize or will reuse */
     int process_num = 0;
-    //printf("$$$$$$$$%s\n", process[0].exec_path);
     char *token;
 
     /* remove redundant space and tab */
@@ -42,21 +38,19 @@ void parse_command(char *line, Environment *environment)
     }
     single_commands[single_command_num] = NULL;
 
-    /*
+#ifdef DEBUG
     for (int _i = 0; _i < single_command_num; ++_i)
     {
         printf("%s\n", single_commands[_i]);
     }
-*/
+#endif
 
     for (int _i = 0; _i < single_command_num; ++_i)
     {
         char *cur_command = strdup(single_commands[_i]);
         cur_command = clean(cur_command);
-        //printf("%s\n", cur_command);
         if (cur_command == NULL || cur_command[0] == '\0')
             continue;
-        //printf("%d: %s\n", _i, cur_command);
 
         /* redirection */
         char *redirection_sep[5];
@@ -143,14 +137,6 @@ void parse_command(char *line, Environment *environment)
                 path_i++;
             }
         }
-        /* get prepared for first parameter of execv */
-        /*
-        for (int i = 1; i < process[process_num].argc; i++)
-        {
-            strcat(process[process_num].exec_path, " ");
-            strcat(process[process_num].exec_path, process[process_num].argv[i]);
-        }
-        */
 
         /* ready for a new process */
         ++process_num;
@@ -165,12 +151,16 @@ void run_processes(struct Process process[], int process_num)
     //pid_t pid = 0; /* parent process */
     //const pid_t pgrp = getpgrp();
     /* run all processes and wait for them to finnish */
+
+    pid_t pid = 0, wpid;
+    int wait_status;
+
     for (int number = 0; number < process_num; number++)
     {
 #ifdef DEBUG
         printf("%d: %s %d %d \n", number, process[number].exec_path, process[number].argc, process[number].redirected);
 #endif
-        int pid = process[number].pid = fork();
+        pid = process[number].pid = fork();
 
         if (pid < 0)
         {
@@ -180,7 +170,9 @@ void run_processes(struct Process process[], int process_num)
 
         else if (pid == 0)
         { /* forked process */
-            //printf("pid: %d pgrp: %d\n", getpid(), getpgrp());
+#ifdef DEBUG
+            printf("pid: %d pgrp: %d\n", getpid(), getpgrp());
+#endif
             if (process[number].redirected)
             { /* handle redirection */
                 if (-1 == dup2(process[number].redirection, fileno(stderr)))
@@ -188,27 +180,32 @@ void run_processes(struct Process process[], int process_num)
                     PRINT_ERROR_MESSAGE;
                     exit(1);
                 }
-                //close(1); /* close STDOUT, done by dup2 */
+                /* close(1)  i.e. STDOUT is done by dup2 */
                 if (-1 == dup2(process[number].redirection, fileno(stdout)))
                 {
                     PRINT_ERROR_MESSAGE;
                     exit(1);
                 }
             }
-            //setpgid(0, 0);
             execv(process[number].exec_path, process[number].argv);
             PRINT_ERROR_MESSAGE;
-            exit(1); /* something wrong */
+            exit(1); /* something went wrong executing subprocess */
         }
 
-        else /* parent process */
+        else
         {
             //printf("%d\n", getpgrp());
             //waitpid(-pgrp, 0, 0);
 
-            int status;
-            wait(&status);
-            //waitpid(0, &status, WNOHANG | WUNTRACED);
+            //wait(&wait_status);
+            //waitpid(-1, &wait_status, WNOHANG | WUNTRACED);
         }
+    }
+    if (pid) /* parent process */
+    {
+        while ((wpid = wait(&wait_status)) > 0)
+            ;
+        /* https://stackoverflow.com/a/23872806/4810608 */
+        //waitpid(-getpid(), &wait_status, WUNTRACED);
     }
 }

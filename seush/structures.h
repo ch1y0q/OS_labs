@@ -8,37 +8,21 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 
-typedef struct Environment  // run-time context
-{ 
+typedef struct Environment // run-time context
+{
     char *paths[MAX_PATH_NUM]; // array of paths to be searched
-    char cwd[MAX_PATH];     // current working directory
-    BOOL path_set_by_user;  // if the path was set by user
+    char cwd[MAX_PATH];        // current working directory
+    BOOL path_set_by_user;     // if the path was set by user
 } Environment;
 
 typedef struct Process
 {
     pid_t pid;
-    int argc;               // number of arguments
-    char** argv;            // array of char*
-    char * exec_path;
+    int argc;    // number of arguments
+    char **argv; // array of char*
+    char *exec_path;
     BOOL redirected;
-    int redirection;        // fd of opened file
+    int redirection; // fd of opened file
 } Process;
-
-typedef struct Launch
-{
-    struct Environment *environment;
-    char *command;
-    char *args;
-    char *redirection;
-} Launch;
-
-typedef struct PreLaunch
-{
-    struct Process *process;
-    char **argv;
-    char *path_to_run;
-} PreLaunch;
-
 
 #endif
