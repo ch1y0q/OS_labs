@@ -127,8 +127,6 @@ void parse_command(char *line, Environment *environment)
                 }
                 strcat(full_path, process[process_num].argv[0]);
 
-                //printf("*******%s\n",full_path);
-
                 if (access(full_path, X_OK) == 0)
                 {
                     process[process_num].exec_path = strdup(full_path);
@@ -146,12 +144,9 @@ void parse_command(char *line, Environment *environment)
     run_processes(process, process_num);
 }
 
+/* run all processes and wait for them to finnish */
 void run_processes(struct Process process[], int process_num)
 {
-    //pid_t pid = 0; /* parent process */
-    //const pid_t pgrp = getpgrp();
-    /* run all processes and wait for them to finnish */
-
     pid_t pid = 0, wpid;
     int wait_status;
 
@@ -191,21 +186,11 @@ void run_processes(struct Process process[], int process_num)
             PRINT_ERROR_MESSAGE;
             exit(1); /* something went wrong executing subprocess */
         }
-
-        else
-        {
-            //printf("%d\n", getpgrp());
-            //waitpid(-pgrp, 0, 0);
-
-            //wait(&wait_status);
-            //waitpid(-1, &wait_status, WNOHANG | WUNTRACED);
-        }
     }
     if (pid) /* parent process */
     {
         while ((wpid = wait(&wait_status)) > 0)
             ;
         /* https://stackoverflow.com/a/23872806/4810608 */
-        //waitpid(-getpid(), &wait_status, WUNTRACED);
     }
 }

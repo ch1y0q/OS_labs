@@ -26,10 +26,11 @@ sudo apt install gcc-i686-linux-gnuz
 ```
 and modified Makefile.
 But did not work for me.
--------
+
 I tried to redirect qemu terminal output to a file, analyzed it with a hex editor, and saw "0d 0a", a.k.a. CR LF, alas.
 The I looked into test_1.c: `printf(1, "XV6_TEST_OUTPUT %d %d %d\n", x2-x1, x3-x2, x4-x3);`, seems quite normal. To rule out possibility of compiler's magical behavior, I decompiled the test_1.o and test_2.o, which are used to test the Xv6 system, and the pattern string of printf ended with the normal LF("0AH")...
-------
+
+
 03.17:
 Now, it seems more like qemu's bug.
 
@@ -65,3 +66,21 @@ I also put forward a question on Stack Overflow: https://stackoverflow.com/quest
 03.26
 Try to run test with a classmate's code(passed tests on his machine), results same as mine. The problem must be related to environment, not my code!
 
+## Unix Shell
+This lab is of a lot of work.
+
+### Compiling
+`gcc` always returns error in locating my source code files. I wrote a `CMakeLists.txt` to make it know where to find the sources. What's more, `make` is way shorter than `gcc -o seush seush.c`.
+
+### Parsing Commands
+Initially, I parse a command by scanning character by character, which is a lot of effort. Variables for recording occurence of `&` and `>` are needed, and I had to filter all the redundant whitespaces and tabs.
+Then I switch to `strtok`. First separate by `&`, then `>`, then ` `. It then gets much more concise and clear.
+
+### Initialization of Variables
+In function `void parse_command(char *line, Environment *environment)`, a `process[]` is used to store processes that are about to execute. But in test #7, the path changed to empty string from `\bin` and my shell still found the location of `ls`. At beginning I thought it's handling `path` built-in command, but nothing seemed to be wrong. Then I output my Environment.paths and process[], and found that `process[]` seemed to be reused in handling the second command...
+By initializing it like `Process process[MAX_PIDS] = {0};`, the problem solved.
+
+### Parallel Execution
+I tried various ways of calling `waitpid` with different arguments, but all seem to fail the target.
+By putting the `waitpid(&wait_status)` in the end of the loop of executing processes stored in `struct Process`, it becomes serial and would fail test #22. By putting it outside the loop and at the end of the function, shell continues to perform next line upon the return of first subprocess instead of waiting for all subprocess to terminate. Calling with `waitpid(-getpid(), &wait_status, WUNTRACED);` (`-getpid()` means the process group that parent process belongs to; all subprocesses belong to the same process group) didn't work, either.
+The solution is to put `wait` into a `while` loop: `while ((wpid = wait(&wait_status)) > 0);`.

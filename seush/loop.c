@@ -42,7 +42,7 @@ void run_shell(char *batch)
 
     FILE *batchFile = NULL;
     if (batch != NULL)
-    { // read from file
+    { /* read from file*/
         batchFile = fopen(batch, "r");
         if (batchFile == NULL)
         {
@@ -93,7 +93,6 @@ void run_shell(char *batch)
             }
 
             char *paths = strdup(line + 4); // skip "path"
-            //printf("%s, paths[0] = %d\n",paths,paths[0]);
             environment.path_set_by_user = TRUE;
             int path_sep_num = 0;
             if (paths[0] != '\0')
@@ -106,20 +105,10 @@ void run_shell(char *batch)
                 }
             }
             environment.paths[path_sep_num] = strdup("");
-            //printf("%s\n",environment.paths[0]);
-            /*------------------
-                _i=0;
-                while (environment.paths[_i][0] != '\0')
-                {
-                    printf("%s\n",environment.paths[_i]);
-                    _i++;
-                }
-            ------------------*/
         }
         else if (strncmp(line, "cd", 2) == 0)
         {
             char *new_dir = line + 3;
-            //char *new_dir = to_absolute_path(line + 3, environment.cwd);
             DIR *dir = opendir(new_dir);
             if (dir)
             {
@@ -147,7 +136,4 @@ void run_shell(char *batch)
     {
         fclose(batchFile);
     }
-
-    /* free environment paths */
-    environment.paths[0] = NULL;
 }
