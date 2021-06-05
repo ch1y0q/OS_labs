@@ -66,6 +66,8 @@ I also put forward a question on Stack Overflow: https://stackoverflow.com/quest
 03.26
 Try to run test with a classmate's code(passed tests on his machine), results same as mine. The problem must be related to environment, not my code!
 
+用了同学的VM镜像测试，解决。
+
 ## Unix Shell
 This lab is of a lot of work.
 
