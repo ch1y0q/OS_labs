@@ -112,6 +112,9 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  //initialize the readid to 0
+  p->readid = 0;
+
   return p;
 }
 

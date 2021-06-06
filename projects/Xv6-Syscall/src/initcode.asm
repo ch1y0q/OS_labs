@@ -1,5 +1,5 @@
 
-initcode.o：     文件格式 elf32-i386
+initcode.o:     file format elf32-i386
 
 
 Disassembly of section .text:
