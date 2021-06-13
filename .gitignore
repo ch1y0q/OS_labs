@@ -1,7 +1,6 @@
 .git
 .vscode
-projects/*
-!projects/Xv6-Syscall
+projects/Xv6-Syscall
 *.in
 *.out
 *.err
